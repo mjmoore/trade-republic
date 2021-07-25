@@ -45,8 +45,7 @@ public class QuoteService implements DataService<Quote> {
                         .build())
                 .map(quoteRepository::save)
                 .ifPresentOrElse(
-                        (entity) -> log.debug("New quote of {} for ISIN {}",
-                                entity.getPrice(), quote.isin()),
+                        (entity) -> log.debug("New quote of {} for ISIN {}", entity.getPrice(), quote.isin()),
                         () -> log.warn("Received quote for unknown or deleted ISIN: {}", quote.isin())
                 );
     }

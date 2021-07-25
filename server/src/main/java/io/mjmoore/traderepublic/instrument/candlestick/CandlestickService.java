@@ -3,8 +3,11 @@ package io.mjmoore.traderepublic.instrument.candlestick;
 import io.mjmoore.traderepublic.instrument.InstrumentEntity;
 import io.mjmoore.traderepublic.instrument.InstrumentRepository;
 import io.mjmoore.traderepublic.quote.QuoteEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -14,6 +17,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class CandlestickService {
@@ -24,7 +29,7 @@ public class CandlestickService {
         this.instrumentRepository = instrumentRepository;
     }
 
-    public Set<CandlestickResponse> getCandlesticks(final String isin) {
+    public List<CandlestickResponse> getCandlesticks(final String isin) {
 
         return instrumentRepository.findByIsin(isin)
                 .map(InstrumentEntity::getQuotes)
@@ -34,7 +39,7 @@ public class CandlestickService {
     }
 
     private static class CandlestickCollector
-            implements Collector<QuoteEntity, Map<Instant, Set<QuoteEntity>>, Set<CandlestickResponse>> {
+            implements Collector<QuoteEntity, Map<Instant, Set<QuoteEntity>>, List<CandlestickResponse>> {
 
 
         @Override
@@ -58,13 +63,68 @@ public class CandlestickService {
         }
 
         @Override
-        public Function<Map<Instant, Set<QuoteEntity>>, Set<CandlestickResponse>> finisher() {
-            return (data) -> data.entrySet()
-                    .stream()
-                    .map(entry -> entry.getValue()
-                            .stream()
-                            .collect(new CandlestickMaker(entry.getKey())))
-                    .collect(Collectors.toSet());
+        public Function<Map<Instant, Set<QuoteEntity>>, List<CandlestickResponse>> finisher() {
+            return (data) -> {
+                final List<CandlestickResponse> candlesticks = data.entrySet()
+                        .stream()
+                        .sorted(Map.Entry.comparingByKey())
+                        .map(entry -> entry.getValue()
+                                .stream()
+                                .collect(new CandlestickMaker(entry.getKey())))
+                        .collect(Collectors.toList());
+
+                if(candlesticks.size() <= 1) {
+                    return candlesticks;
+                }
+
+                final List<CandlestickResponse> gaps = IntStream.range(1, candlesticks.size())
+                        .mapToObj(i -> Pair.of(candlesticks.get(i - 1), candlesticks.get(i)))
+                        .map(pair -> {
+                            final long minutesBetween = Duration
+                                    .between(pair.getLeft().getOpenTime(), pair.getRight().getOpenTime())
+                                    .toMinutes() - 1;
+
+                            if (minutesBetween == 0) {
+                                return Collections.<CandlestickResponse>emptyList();
+                            }
+
+                            return Stream.generate(new DuplicateCandlestickGenerator(pair.getLeft()))
+                                    .limit(minutesBetween)
+                                    .collect(Collectors.toList());
+                        })
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+
+                return Stream.of(candlesticks, gaps)
+                        .flatMap(Collection::stream)
+                        .sorted(Comparator.comparing(CandlestickResponse::getOpenTime))
+                        .collect(Collectors.toList());
+
+            };
+        }
+
+        private static class DuplicateCandlestickGenerator implements Supplier<CandlestickResponse> {
+
+            private final CandlestickResponse candlestick;
+            private int counter = 1;
+
+            private DuplicateCandlestickGenerator(final CandlestickResponse candlestick) {
+                this.candlestick = candlestick;
+            }
+
+            @Override
+            public CandlestickResponse get() {
+                return candlestick.toBuilder()
+                        .openTime(candlestick.getOpenTime().plus(counter++, ChronoUnit.MINUTES))
+                        .closeTime(candlestick.getOpenTime().plus(counter, ChronoUnit.MINUTES))
+                        .build();
+            }
+        }
+        @Data
+        @AllArgsConstructor(staticName = "of")
+        private static class Pair {
+            private CandlestickResponse left;
+            private CandlestickResponse right;
         }
 
         @Override

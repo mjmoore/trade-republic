@@ -44,6 +44,10 @@ public class InstrumentService implements DataService<Instrument> {
     }
 
     private void add(final Instrument instrument) {
-        repository.save(mapper.toEntity(instrument));
+        repository.findByIsin(instrument.isin())
+                .ifPresentOrElse(
+                        (entity) -> log.warn("Attempted to save duplicate ISIN: {}. Ignoring.", entity.getIsin()),
+                        () -> repository.save(mapper.toEntity(instrument))
+                );
     }
 }

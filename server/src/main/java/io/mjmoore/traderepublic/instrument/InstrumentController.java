@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,7 @@ public class InstrumentController {
 
         final InstrumentResponse instrument = findInstrument(isin);
 
-        final Set<CandlestickResponse> candlesticks = this.candlestickService.getCandlesticks(isin);
+        final List<CandlestickResponse> candlesticks = this.candlestickService.getCandlesticks(isin);
 
         final InstrumentCandlestickResponse instrumentCandlestick =
                 new InstrumentCandlestickResponse(instrument, candlesticks);

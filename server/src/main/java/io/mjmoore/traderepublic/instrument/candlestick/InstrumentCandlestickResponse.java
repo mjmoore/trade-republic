@@ -2,7 +2,7 @@ package io.mjmoore.traderepublic.instrument.candlestick;
 
 import io.mjmoore.traderepublic.instrument.InstrumentResponse;
 
-import java.util.Set;
+import java.util.List;
 
-public record InstrumentCandlestickResponse(InstrumentResponse instrument, Set<CandlestickResponse> candlesticks) {
+public record InstrumentCandlestickResponse(InstrumentResponse instrument, List<CandlestickResponse> candlesticks) {
 }

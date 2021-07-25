@@ -1,4 +1,4 @@
-package io.mjmoore.traderepublic.websocket;
+package io.mjmoore.traderepublic.partner;
 
 import java.util.function.Consumer;
 

@@ -1,9 +1,9 @@
-package io.mjmoore.traderepublic.instrument.partner;
+package io.mjmoore.traderepublic.partner.instrument;
 
 import io.mjmoore.traderepublic.instrument.Instrument;
 import io.mjmoore.traderepublic.instrument.InstrumentRepository;
 import io.mjmoore.traderepublic.mappers.InstrumentMapper;
-import io.mjmoore.traderepublic.websocket.DataService;
+import io.mjmoore.traderepublic.partner.DataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

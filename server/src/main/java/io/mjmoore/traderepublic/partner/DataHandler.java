@@ -1,4 +1,4 @@
-package io.mjmoore.traderepublic.websocket;
+package io.mjmoore.traderepublic.partner;
 
 import io.mjmoore.traderepublic.mappers.Mapper;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package io.mjmoore.traderepublic.quote;
 
-import io.mjmoore.traderepublic.quote.partner.QuoteType;
+import io.mjmoore.traderepublic.partner.quote.QuoteType;
 
 import java.time.Instant;
 

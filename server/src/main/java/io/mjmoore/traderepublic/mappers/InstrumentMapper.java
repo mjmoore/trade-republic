@@ -3,8 +3,8 @@ package io.mjmoore.traderepublic.mappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mjmoore.traderepublic.instrument.Instrument;
-import io.mjmoore.traderepublic.instrument.partner.InstrumentData;
-import io.mjmoore.traderepublic.instrument.partner.InstrumentDto;
+import io.mjmoore.traderepublic.partner.instrument.InstrumentData;
+import io.mjmoore.traderepublic.partner.instrument.InstrumentDto;
 import io.mjmoore.traderepublic.instrument.InstrumentEntity;
 import lombok.extern.slf4j.Slf4j;
 

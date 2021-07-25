@@ -3,9 +3,8 @@ package io.mjmoore.traderepublic.mappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mjmoore.traderepublic.quote.Quote;
-import io.mjmoore.traderepublic.quote.QuoteEntity;
-import io.mjmoore.traderepublic.quote.partner.QuoteData;
-import io.mjmoore.traderepublic.quote.partner.QuoteDto;
+import io.mjmoore.traderepublic.partner.quote.QuoteData;
+import io.mjmoore.traderepublic.partner.quote.QuoteDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;

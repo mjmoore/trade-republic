@@ -1,10 +1,10 @@
-package io.mjmoore.traderepublic.quote.partner;
+package io.mjmoore.traderepublic.partner.quote;
 
 import io.mjmoore.traderepublic.instrument.InstrumentRepository;
 import io.mjmoore.traderepublic.quote.Quote;
 import io.mjmoore.traderepublic.quote.QuoteEntity;
 import io.mjmoore.traderepublic.quote.QuoteRepository;
-import io.mjmoore.traderepublic.websocket.DataService;
+import io.mjmoore.traderepublic.partner.DataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

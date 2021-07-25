@@ -1,4 +1,4 @@
-package io.mjmoore.traderepublic.websocket;
+package io.mjmoore.traderepublic.partner;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.socket.WebSocketHandler;

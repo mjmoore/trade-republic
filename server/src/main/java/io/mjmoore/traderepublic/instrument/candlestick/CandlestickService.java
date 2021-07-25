@@ -38,9 +38,27 @@ public class CandlestickService {
                 .collect(new CandlestickCollector());
     }
 
+    /**
+     * This collector is responsible for collating candlesticks over time.
+     * Once all candlesticks are collated, gaps are detected and filled in.
+     */
     private static class CandlestickCollector
             implements Collector<QuoteEntity, Map<Instant, Set<QuoteEntity>>, List<CandlestickResponse>> {
 
+        private static final Function<Pair, List<CandlestickResponse>> GenerateGaps = (pair) -> {
+
+            final long minutesBetween = Duration
+                    .between(pair.getLeft().getOpenTime(), pair.getRight().getOpenTime())
+                    .toMinutes() - 1;
+
+            if (minutesBetween == 0) {
+                return Collections.emptyList();
+            }
+
+            return Stream.generate(new DuplicateCandlestickGenerator(pair.getLeft()))
+                    .limit(minutesBetween)
+                    .collect(Collectors.toList());
+        };
 
         @Override
         public Supplier<Map<Instant, Set<QuoteEntity>>> supplier() {
@@ -58,13 +76,22 @@ public class CandlestickService {
 
         @Override
         public BinaryOperator<Map<Instant, Set<QuoteEntity>>> combiner() {
-            // TODO
-            return (left, right) -> left;
+            // Merge both results, merge value sets if there's a match on key
+            return (left, right) -> {
+                final Map<Instant, Set<QuoteEntity>> result = new HashMap<>(left);
+                right.forEach((key, value) -> {
+                    result.computeIfAbsent(key, instant -> new HashSet<>());
+                    result.get(key).addAll(value);
+                });
+                return result;
+            };
         }
 
         @Override
         public Function<Map<Instant, Set<QuoteEntity>>, List<CandlestickResponse>> finisher() {
             return (data) -> {
+
+                // Transform all quotes into candlesticks
                 final List<CandlestickResponse> candlesticks = data.entrySet()
                         .stream()
                         .sorted(Map.Entry.comparingByKey())
@@ -77,24 +104,14 @@ public class CandlestickService {
                     return candlesticks;
                 }
 
+                // Detect and generate gap candlesticks
                 final List<CandlestickResponse> gaps = IntStream.range(1, candlesticks.size())
                         .mapToObj(i -> Pair.of(candlesticks.get(i - 1), candlesticks.get(i)))
-                        .map(pair -> {
-                            final long minutesBetween = Duration
-                                    .between(pair.getLeft().getOpenTime(), pair.getRight().getOpenTime())
-                                    .toMinutes() - 1;
-
-                            if (minutesBetween == 0) {
-                                return Collections.<CandlestickResponse>emptyList();
-                            }
-
-                            return Stream.generate(new DuplicateCandlestickGenerator(pair.getLeft()))
-                                    .limit(minutesBetween)
-                                    .collect(Collectors.toList());
-                        })
+                        .map(GenerateGaps)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toList());
 
+                // Merge actual candlesticks with generated gaps
                 return Stream.of(candlesticks, gaps)
                         .flatMap(Collection::stream)
                         .sorted(Comparator.comparing(CandlestickResponse::getOpenTime))
@@ -103,6 +120,15 @@ public class CandlestickService {
             };
         }
 
+        @Override
+        public Set<Characteristics> characteristics() {
+            return Collections.emptySet();
+        }
+
+        /**
+         * A supplier that generates progressive candlesticks based on some reference point.
+         * Each successive call to `Supplier::get` will create a duplicate candlestick pushed forward by one minute.
+         */
         private static class DuplicateCandlestickGenerator implements Supplier<CandlestickResponse> {
 
             private final CandlestickResponse candlestick;
@@ -120,6 +146,7 @@ public class CandlestickService {
                         .build();
             }
         }
+
         @Data
         @AllArgsConstructor(staticName = "of")
         private static class Pair {
@@ -127,12 +154,13 @@ public class CandlestickService {
             private CandlestickResponse right;
         }
 
-        @Override
-        public Set<Characteristics> characteristics() {
-            return Collections.emptySet();
-        }
     }
 
+    /**
+     * A reducer which collapses a collection of quotes into a single candlestick.
+     *
+     * Would be better written as a reduce operation instead of a full-blown Collector as this is quite verbose.
+     */
     private record CandlestickMaker(Instant open)
             implements Collector<QuoteEntity, CandlestickResponse, CandlestickResponse> {
 

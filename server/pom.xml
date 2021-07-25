@@ -12,7 +12,7 @@
 
     <groupId>io.mjmoore</groupId>
     <artifactId>server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>server</name>
     <description>Trade Republic Coding Challenge</description>
     <properties>
@@ -79,6 +79,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>io.mjmoore.traderepublic.Application</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

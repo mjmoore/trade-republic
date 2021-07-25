@@ -1,7 +1,7 @@
 partner:
   url: ws://localhost:8080
-  instruments: ${partner.url}/instruments
-  quotes: ${partner.url}/quotes
+  instrumentsUrl: ${partner.url}/instruments
+  quotesUrl: ${partner.url}/quotes
 
 server:
   port: 8081

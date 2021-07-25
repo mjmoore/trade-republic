@@ -2,12 +2,10 @@ package io.mjmoore.traderepublic.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mjmoore.traderepublic.instrument.Instrument;
-import io.mjmoore.traderepublic.partner.instrument.InstrumentDto;
-import io.mjmoore.traderepublic.partner.instrument.InstrumentService;
 import io.mjmoore.traderepublic.mappers.InstrumentMapper;
 import io.mjmoore.traderepublic.partner.DataHandler;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import io.mjmoore.traderepublic.partner.instrument.InstrumentDto;
+import io.mjmoore.traderepublic.partner.instrument.InstrumentService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.socket.WebSocketHandler;
@@ -16,7 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-@Slf4j
 @Configuration
 public class InstrumentConfig {
 
@@ -29,8 +26,8 @@ public class InstrumentConfig {
     }
 
     @Bean
-    public URI instrumentsUri(@Value("${partner.instruments}") final String url) {
-        return URI.create(url);
+    public URI instrumentsUri(final PartnerConfig partnerConfig) {
+        return URI.create(partnerConfig.getInstrumentsUrl());
     }
 
     @Bean

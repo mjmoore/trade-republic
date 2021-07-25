@@ -2,10 +2,10 @@ package io.mjmoore.traderepublic.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mjmoore.traderepublic.mappers.QuoteMapper;
-import io.mjmoore.traderepublic.quote.Quote;
+import io.mjmoore.traderepublic.partner.DataHandler;
 import io.mjmoore.traderepublic.partner.quote.QuoteDto;
 import io.mjmoore.traderepublic.partner.quote.QuoteService;
-import io.mjmoore.traderepublic.partner.DataHandler;
+import io.mjmoore.traderepublic.quote.Quote;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,8 +34,8 @@ public class QuoteConfig {
     }
 
     @Bean
-    public URI quotesUri(@Value("${partner.quotes}") final String url) {
-        return URI.create(url);
+    public URI quotesUri(final PartnerConfig partnerConfig) {
+        return URI.create(partnerConfig.getQuotesUrl());
     }
 
     @Bean

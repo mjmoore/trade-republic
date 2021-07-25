@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "partner.quotesUrl",
+      "type": "java.lang.String",
+      "description": "Description for partner.quotesUrl."
+  }
+] }

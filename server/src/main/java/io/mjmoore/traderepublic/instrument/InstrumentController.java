@@ -53,7 +53,7 @@ public class InstrumentController {
         final Set<QuoteResponse> quotes = instrument.getQuotes()
                 .stream()
                 .map(quote -> new QuoteResponse(quote.getTime(), quote.getPrice()))
-                .collect(Collectors.toSet());;
+                .collect(Collectors.toSet());
 
         return ResponseEntity.ok(new QuotesResponse(mapInstrument(instrument), quotes));
     }

@@ -2,6 +2,7 @@ package io.mjmoore.traderepublic.partner;
 
 import io.mjmoore.traderepublic.mappers.Mapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
@@ -20,6 +21,7 @@ public class DataHandler<Dto, Model> implements WebSocketHandler {
         this.dataService = dataService;
     }
 
+    @NonNull
     @Override
     public Mono<Void> handle(final WebSocketSession session) {
 

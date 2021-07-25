@@ -1,6 +1,5 @@
 package io.mjmoore.traderepublic.quote;
 
-import io.mjmoore.traderepublic.instrument.InstrumentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

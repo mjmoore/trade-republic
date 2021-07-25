@@ -2,6 +2,5 @@ package io.mjmoore.traderepublic.websocket;
 
 import java.util.function.Consumer;
 
-@FunctionalInterface
-public interface DataCollector<T> extends Consumer<T> {
+public interface DataService<Model> extends Consumer<Model> {
 }

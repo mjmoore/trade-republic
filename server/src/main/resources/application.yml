@@ -1,0 +1,23 @@
+partner:
+  url: ws://localhost:8080
+  instruments: ${partner.url}/instruments
+  quotes: ${partner.url}/quotes
+
+server:
+  port: 8081
+
+spring:
+  datasource:
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/data
+    username: postgres
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+logging:
+  level:
+    root: INFO

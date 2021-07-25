@@ -1,14 +1,13 @@
-package io.mjmoore.traderepublic.instrument;
+package io.mjmoore.traderepublic.quote.partner;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum InstrumentType {
-    Add("ADD"),
-    Delete("DELETE");
+public enum QuoteType {
+    Quote("QUOTE");
 
     private final String type;
 
-    InstrumentType(final String type) {
+    QuoteType(final String type) {
         this.type = type;
     }
 

@@ -1,6 +1,8 @@
 package io.mjmoore.traderepublic.quote;
 
+import io.mjmoore.traderepublic.quote.partner.QuoteType;
+
 import java.time.Instant;
 
-public record Quote(Instant time, QuoteData data) {
+public record Quote(Instant time, String isin, Double price, QuoteType type) {
 }
